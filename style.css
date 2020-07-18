@@ -1,0 +1,22 @@
+body {
+    background-color: powderblue;
+  }
+  h1 {
+    color: black;
+    font-family: Calibri;
+    font-size: 300%;
+  }
+  h2 {
+    color: orange;
+    font-family: Calibri;
+    font-size: 300%;
+  }
+  h3 {
+    color: violet;
+    font-family: Calibri;
+    font-size: 160%;
+  }
+  p {
+    color: black;
+    font-family: Calibri;
+  }
