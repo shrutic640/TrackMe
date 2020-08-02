@@ -20,6 +20,7 @@
     const isAuthenticated = localStorage.getItem('isAuthenticated');
     const logoutElement = '<a class="nav-item nav-link" onClick="logout()">Logout</a>';
     const loginElement = '<a class="nav-item nav-link" href="/login">Login</a>';
+
     isAuthenticated
         ? $('#auth-nav').append(logoutElement)
         : $('#auth-nav').append(loginElement);
