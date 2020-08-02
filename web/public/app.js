@@ -1,7 +1,7 @@
 $('#navbar').load('navbar.html');
 $('#footer').load("footer.html");
 
- 
+
 const devices = JSON.parse(localStorage.getItem('devices')) || [];
 const users = JSON.parse(localStorage.getItem('users')) || [];
 
@@ -61,13 +61,13 @@ console.log(response);
 
 //use this for 1.4 then delete// 
 devices.forEach(function (device) {
- $('#devices tbody').append(`
+    $('#devices tbody').append(`
  <tr>
  <td>${device.user}</td>
 <td>${device.name}</td>
  </tr>`
-);
-}); 
+    );
+});
 
 
 //use this for 1.4 then delete// 
@@ -77,7 +77,7 @@ $('#add-device').on('click', function () {
     devices.push({ user: user, name: name });
     localStorage.setItem('devices', JSON.stringify(devices));
     location.href = '/';
-}); 
+});
 
 
 
@@ -87,60 +87,46 @@ $('#send-command').on('click', function () {
 });
 
 
-$('#register').on('click', function() {
+$('#register').on('click', function () {
     const username = $('#user').val();
     const password = $('#password').val();
     const confirmpasswrd = $('#confirmpassword').val();
-    const exists = users.find((user) => {console.log(user.username); return user.username === username});
-    if (exists == undefined)
-    {
-      if(password == confirmpasswrd)
-      {
-        users.push({ username, password, confirmpasswrd });
-        localStorage.setItem('users', JSON.stringify(users));
+    const exists = users.find(user => user.name === username && user.password === password);
+    if (exists == undefined) {
+        if (password == confirmpasswrd) {
+            users.push({ username, password, confirmpasswrd });
+            localStorage.setItem('users', JSON.stringify(users));
+            location.href = '/login';
+        }
+        else {
+            $("#message-warning").text("Passwords do not match! Please Try again");
+            $("#message").fadeIn();
+        }
+    }
+    else {
+        $("#message-warning").text("User Exists!");
+        $("#message").fadeIn();
+    }
+
+
+    $('#login').on('click', function () {
+        const username = $('#user').val();
+        const password = $('#password').val();
+        const exists = users.find(user => user.name === username && user.password === password);
+        if (!exists) {
+            $("#message-warning").text("User doesn't Exists!");
+            $("#message").fadeIn();
+        }
+        else {
+            localStorage.setItem('isAuthenticated', JSON.stringify(true));
+            location.href = '/';
+        }
+
+    });
+
+    const logout = () => {
+        localStorage.removeItem('isAuthenticated');
         location.href = '/login';
-      }
-      else
-      {
-        $("#message-warning").text("Passwords do not match! Please Try again");
-        $("#message").fadeIn();
-      }
     }
-    else
-    {
-      $("#message-warning").text("User Exists!");
-      $("#message").fadeIn();
-    }
-
-
-$('#login').on('click', function() {
-    const username = $('#user').val();
-    const password = $('#password').val();
-    const exists = users.find((user) => {console.log(user.username); return user.username === username});
-    const confirmpassword = users.find((user) => {console.log(user.passwrd); return user.password === passwrd});
-    if (exists == undefined)
-    {
-      $("#message-warning").text("User doesn't Exists!");
-      $("#message").fadeIn();
-    }
-    else
-    {
-      if (confirmpassword == undefined)
-      {
-        $("#message-warning").text("Password does not match.. Try Again!");
-        $("#message").fadeIn();
-      }
-      else
-      {
-        localStorage.setItem('isAuthenticated', JSON.stringify(true));
-        location.href = '/';
-      }
-    }
-  });
-
-const logout = () => {
-    localStorage.removeItem('isAuthenticated');
-    location.href = '/login';
-}
 
 })
