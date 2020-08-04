@@ -2,24 +2,23 @@ $('#navbar').load('navbar.html');
 $('#footer').load("footer.html");
 
 
-const devices = JSON.parse(localStorage.getItem('devices')) || [];
-const users = JSON.parse(localStorage.getItem('users')) || [];
+//const devices = JSON.parse(localStorage.getItem('devices')) || [];
+//const users = JSON.parse(localStorage.getItem('users')) || [];
 
-/* 2.2 
-const API_URL = 'http://localhost:5000/api';
-*/
-
-//use this for 1.4 then delete//
+//2.2 
+const API_URL = 'https://api-puce-two.vercel.app/api';
 
 
-/*  2.1 onwards// 
+
+
+//  2.1 onwards// 
 const response = $.get(`${API_URL}/devices`);
 console.log(response);
 
 
 
 
-/* 2.1 onwards//
+// 2.1 onwards//
  $.get(`${API_URL}/devices`)
     .then(response => {
         response.forEach(device => {
@@ -37,7 +36,7 @@ console.log(response);
     
 
 
-  2.1 onwards//
+  //2.1 onwards
  $('#add-device').on('click', () => {
     const name = $('#name').val();
     const user = $('#user').val();
@@ -54,29 +53,6 @@ console.log(response);
         .catch(error => {
             console.error(`Error: ${error}`);
         });
-});
-*/
-
-
-
-//use this for 1.4 then delete// 
-devices.forEach(function (device) {
-    $('#devices tbody').append(`
- <tr>
- <td>${device.user}</td>
-<td>${device.name}</td>
- </tr>`
-    );
-});
-
-
-//use this for 1.4 then delete// 
-$('#add-device').on('click', function () {
-    const user = $('#user').val();
-    const name = $('#name').val();
-    devices.push({ user: user, name: name });
-    localStorage.setItem('devices', JSON.stringify(devices));
-    location.href = '/';
 });
 
 
@@ -97,36 +73,33 @@ $('#register').on('click', function () {
             users.push({ username, password, confirmpasswrd });
             localStorage.setItem('users', JSON.stringify(users));
             location.href = '/login';
-        }
-        else {
+        } else {
             $("#message-warning").text("Passwords do not match! Please Try again");
             $("#message").fadeIn();
         }
-    }
-    else {
+    } else {
         $("#message-warning").text("User Exists!");
         $("#message").fadeIn();
     }
 
+});
 
-    $('#login').on('click', function () {
-        const username = $('#user').val();
-        const password = $('#password').val();
-        const exists = users.find(user => user.name === username && user.password === password);
-        if (!exists) {
-            $("#message-warning").text("User doesn't Exists!");
-            $("#message").fadeIn();
-        }
-        else {
-            localStorage.setItem('isAuthenticated', JSON.stringify(true));
-            location.href = '/';
-        }
+$('#login').on('click', function () {
+    const username = $('#user').val();
+    const password = $('#password').val();
+    const exists = users.find((user) => user.username === username && user.password === password);
 
-    });
-
-    const logout = () => {
-        localStorage.removeItem('isAuthenticated');
-        location.href = '/login';
+    if (exists == undefined) {
+        $("#message-warning").text("User doesn't Exists!");
+        $("#message").fadeIn();
+    } else {
+        localStorage.setItem('isAuthenticated', true);
+        location.href = '/';
     }
 
-})
+});
+
+const logout = () => {
+    localStorage.removeItem('isAuthenticated');
+    location.href = '/login';
+}

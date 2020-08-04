@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-    
+
 <head>
     <meta charset="utf-8" />
     <meta name="description" content="A frontend dashboard for the
@@ -18,37 +18,40 @@ TrackMe application" />
 
         <h1>Registration</h1>
 
-        <div class = "form-group">
+        <div class="form-group">
             <label for="user">Username:</label>
-            <input type="text" class="form-control" id="user" />    
+            <input type="text" class="form-control" id="user" />
         </div>
-        <div class = "form-group">
+        <div class="form-group">
             <label for="pwd">Password:</label>
-            <input type="password" class="form-control" id="password" />    
+            <input type="password" class="form-control" id="password" />
         </div>
-         <div class = "form-group">
+        <div class="form-group">
             <label for="confirmpassword">Confirm Password:</label>
-            <input type="password" class="form-control" id="confirmpassword" />    
+            <input type="password" class="form-control" id="confirmpassword" />
         </div>
         <button type="button" class="btn btn-warning" id="register">Register</button>
         <br>
         <br>
+        <p>
+            Already have an account? Login
+            <a href="/login"> here</a>
+        </p>
+        </form>
+
         <div class="alert alert-danger" role="alert" id="message" style="display: none;">
             <strong id="message-warning"></strong>
         </div>
-        <p>
-            Already have an account? Login 
-            <a href = "/login"> here</a>
-        </p>
-    </form>
-    <div id = "footer"></div>
-</div>
+        <div id="footer"></div>
+
+
+    </div>
     </div>
     <div id="footer"></div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="app.js"></script>
-    
+
 </body>
 
 </html>
