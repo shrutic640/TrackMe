@@ -5,21 +5,59 @@ $('#footer').load("footer.html");
 //const devices = JSON.parse(localStorage.getItem('devices')) || [];
 //const users = JSON.parse(localStorage.getItem('users')) || [];
 
-//2.2 
 const API_URL = 'https://api-puce-two.vercel.app/api';
+const MQTT_URL = "http://localhost:5001";
+
+//fetch devices only for the logged in user 
+//adds a data device-id attribute to track which row is being clicked. 
+const currentUser = localStorage.getItem('user');
+if (currentUser) {
+    $.get(`${API_URL}/users/${currentUser}/devices`)
+        .then(response => {
+            response.forEach((device) => {
+                $('#devices tbody').append(`
+                 <tr data-device-id=${device._id}>
+                     <td>${device.user}</td>
+                     <td>${device.name}</td>
+                     </tr>`
+                );
+            });
+            $('#devices tbody tr').on('click', (e) => {
+                const deviceId = e.currentTarget.getAttribute('data-device-id');
+                $.get(`${API_URL}/devices/${deviceId}/device-history`)
+                    .then(response => {
+                        response.map(sensorData => {
+                            $('#historyContent').append(`
+                <tr>
+                <td>${sensorData.ts}</td>
+                <td>${sensorData.temp}</td>
+                <td>${sensorData.loc.lat}</td>
+                <td>${sensorData.loc.lon}</td>
+                </tr>
+                `);
+                        });
+                        $('#historyModal').modal('show');
+                    });
+            });
+        })
+        .catch(error => {
+            console.error(`Error: ${error}`);
+        });
+}
+else {
+    const path = window.location.pathname;
+    if (path !== '/login' && path !== '/registration') {
+        location.href = '/login';
+    }
+}
 
 
 
-
-//  2.1 onwards// 
 const response = $.get(`${API_URL}/devices`);
 console.log(response);
 
 
-
-
-// 2.1 onwards//
- $.get(`${API_URL}/devices`)
+/*$.get(`${API_URL}/devices`)
     .then(response => {
         response.forEach(device => {
             $('#devices tbody').append(`
@@ -33,11 +71,9 @@ console.log(response);
     .catch(error => {
         console.error(`Error: ${error}`);
     });
-    
+*/
 
-
-  //2.1 onwards
- $('#add-device').on('click', () => {
+$('#add-device').on('click', () => {
     const name = $('#name').val();
     const user = $('#user').val();
     const sensorData = [];
@@ -56,50 +92,62 @@ console.log(response);
 });
 
 
+$('#register').on('click', () => {
+    const username = $('#user').val();
+    const password = $('#password').val();
+    const confirm = $('#confirm').val();
+    if (password !== confirm) {
+        $("#message-warning").text('Passwords do not match');
+        $("#message").fadeIn();
+    } else {
+        $.post(`${API_URL}/registration`, { username, password })
+            .then((response) => {
+                if (response.success) {
+                    location.href = '/login';
+                } else {
+                    $("#message-warning").text(`User already exists`);
+                    $("#message").fadeIn();
+                }
 
-$('#send-command').on('click', function () {
+            });
+    }
+});
+
+
+$('#login').on('click', () => {
+    const username = $('#user').val();
+    const password = $('#password').val();
+    $.post(`${API_URL}/authenticate`, { username, password })
+        .then((response) => {
+            if (response.success) {
+                localStorage.setItem('user', user);
+                localStorage.setItem('isAdmin', response.isAdmin);
+                localStorage.setItem('isAuthenticated', true);
+                location.href = '/';
+            } else {
+                $("#message-warning").text("User doesn't Exists!");
+                $("#message").fadeIn();
+            }
+        });
+});
+
+
+
+
+$('#send-command').on("click", function () {
     const command = $('#command').val();
-    console.log(`command is: ${command}`);
+    const deviceId = $('#deviceid').val();
+    $.post(`${MQTT_URL}/send-command`, { deviceId, command })
+        .then(response => {
+            console.log(response);
+        })
+    console.log(`command is ${command}`);
 });
 
-
-$('#register').on('click', function () {
-    const username = $('#user').val();
-    const password = $('#password').val();
-    const confirmpasswrd = $('#confirmpassword').val();
-    const exists = users.find(user => user.name === username && user.password === password);
-    if (exists == undefined) {
-        if (password == confirmpasswrd) {
-            users.push({ username, password, confirmpasswrd });
-            localStorage.setItem('users', JSON.stringify(users));
-            location.href = '/login';
-        } else {
-            $("#message-warning").text("Passwords do not match! Please Try again");
-            $("#message").fadeIn();
-        }
-    } else {
-        $("#message-warning").text("User Exists!");
-        $("#message").fadeIn();
-    }
-
-});
-
-$('#login').on('click', function () {
-    const username = $('#user').val();
-    const password = $('#password').val();
-    const exists = users.find((user) => user.username === username && user.password === password);
-
-    if (exists == undefined) {
-        $("#message-warning").text("User doesn't Exists!");
-        $("#message").fadeIn();
-    } else {
-        localStorage.setItem('isAuthenticated', true);
-        location.href = '/';
-    }
-
-});
 
 const logout = () => {
+    localStorage.removeItem('user');
     localStorage.removeItem('isAuthenticated');
     location.href = '/login';
+
 }
