@@ -5,13 +5,12 @@ const base = `${__dirname}/public`;
 
 
 app.use(express.static('public'));
-/* remove for 2.3 then add
 app.use((req, res, next) => {
  res.header("Access-Control-Allow-Origin", "*");
  res.header("Access-Control-Allow-Headers", "Origin, X-RequestedWith, Content-Type, Accept");
  next();
 });
-*/
+
 
 app.get('/', (req, res) => {
     res.sendFile(`${base}/device-list.html`);

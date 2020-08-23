@@ -5,12 +5,13 @@ $('#footer').load("footer.html");
 //const devices = JSON.parse(localStorage.getItem('devices')) || [];
 //const users = JSON.parse(localStorage.getItem('users')) || [];
 
-const API_URL = 'https://api-puce-two.vercel.app/api';
+const API_URL = 'http://localhost:5000/api'; //'https://api-puce-two.vercel.app/api';
 const MQTT_URL = "http://localhost:5001";
 
 //fetch devices only for the logged in user 
 //adds a data device-id attribute to track which row is being clicked. 
 const currentUser = localStorage.getItem('user');
+
 if (currentUser) {
     $.get(`${API_URL}/users/${currentUser}/devices`)
         .then(response => {
@@ -52,12 +53,11 @@ else {
 }
 
 
-
 const response = $.get(`${API_URL}/devices`);
 console.log(response);
 
-
-/*$.get(`${API_URL}/devices`)
+// comment out after 2.3
+$.get(`${API_URL}/devices`)
     .then(response => {
         response.forEach(device => {
             $('#devices tbody').append(`
@@ -71,7 +71,7 @@ console.log(response);
     .catch(error => {
         console.error(`Error: ${error}`);
     });
-*/
+
 
 $('#add-device').on('click', () => {
     const name = $('#name').val();
@@ -93,14 +93,14 @@ $('#add-device').on('click', () => {
 
 
 $('#register').on('click', () => {
-    const username = $('#user').val();
+    const user = $('#user').val();
     const password = $('#password').val();
     const confirm = $('#confirm').val();
     if (password !== confirm) {
         $("#message-warning").text('Passwords do not match');
         $("#message").fadeIn();
     } else {
-        $.post(`${API_URL}/registration`, { username, password })
+        $.post(`${API_URL}/registration`, { user, password })
             .then((response) => {
                 if (response.success) {
                     location.href = '/login';
@@ -114,10 +114,11 @@ $('#register').on('click', () => {
 });
 
 
+
 $('#login').on('click', () => {
-    const username = $('#user').val();
+    const user = $('#user').val();
     const password = $('#password').val();
-    $.post(`${API_URL}/authenticate`, { username, password })
+    $.post(`${API_URL}/authenticate`, { user , password })
         .then((response) => {
             if (response.success) {
                 localStorage.setItem('user', user);
@@ -125,7 +126,7 @@ $('#login').on('click', () => {
                 localStorage.setItem('isAuthenticated', true);
                 location.href = '/';
             } else {
-                $("#message-warning").text("User doesn't Exists!");
+                $("#message-warning").text("User doesn't Exist!");
                 $("#message").fadeIn();
             }
         });

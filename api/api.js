@@ -1,7 +1,9 @@
 
 const mongoose = require('mongoose');
-mongoose.connect("mongodb+srv://shruti:uknm1234@cluster0.otluc.mongodb.net",
-    { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}); 
 
 // For device model in MONGODB(mongoose)    
 const Device = require('./models/device');
@@ -19,13 +21,6 @@ const port = process.env.PORT || 5000;
 
 
 app.use(express.static('public'));
-/*remove for 2.3 add after
-app.use((req, res, next) => {
- res.header("Access-Control-Allow-Origin", "*");
- res.header("Access-Control-Allow-Headers", "Origin, X-RequestedWith, Content-Type, Accept");
- next();
-});
-*/
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -53,10 +48,10 @@ app.get('/docs', (req, res) => {
      "The API is working!
 }
 */
-app.get('/api/test', (req, res) => {
-    res.send('The API is working!');
+//app.get('/api/test', (req, res) => {
+//    res.send('The API is working!');
 
-});
+//});
 
 
 
@@ -124,6 +119,7 @@ app.post('/api/devices', (req, res) => {
 
 app.get('/api/devices', (req, res) => {
     Device.find({}, (err, devices) => {
+    
         if (err == true) {
             return res.send(err);
         } else {
@@ -162,7 +158,7 @@ app.post('/api/authenticate', (req, res) => {
 app.post('/api/registration', (req, res) => {
     const { user, password, isAdmin } = req.body;
     console.log(req.body);
-    User.findOne({name: user}, (err, found) => {
+    User.findOne({ name: user }, (err, found) => {
         if (err) {
             return res.send(err);
         } else if (found) {
@@ -207,9 +203,9 @@ app.get('/api/users/:user/devices', (req, res) => {
 });
 
 // use for 2.3 then remove  //
-app.post('/api/send-command', (req, res) => {
+/*app.post('/api/send-command', (req, res) => {
     console.log(req.body);
-});
+});*/
 
 
 app.listen(port, () => {
