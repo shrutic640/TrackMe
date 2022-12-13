@@ -10,7 +10,7 @@
   "author": "shruti",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "sweetalert": "^2.1.2"
   },
   "devDependencies": {
